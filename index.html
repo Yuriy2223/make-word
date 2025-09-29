@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="uk">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="style.css" />
+    <title>Гра склади слово</title>
+  </head>
+  <body>
+    <main>
+      <div class="container">
+        <h1>🎨 Склади слово</h1>
+        <p class="subtitle">Стань чемпіоном складання слів!</p>
+
+        <div class="difficulty-selector">
+          <button class="difficulty-btn easy" onclick="setDifficulty('easy')">
+            🟢 ЛЕГКО<br /><small>3-5 букв</small>
+          </button>
+          <button
+            class="difficulty-btn medium active"
+            onclick="setDifficulty('medium')"
+          >
+            🟡 СЕРЕДНЬО<br /><small>6-8 букв</small>
+          </button>
+          <button class="difficulty-btn hard" onclick="setDifficulty('hard')">
+            🔴 ВАЖКО<br /><small>9+ букв</small>
+          </button>
+        </div>
+
+        <div class="stats-panel">
+          <div
+            class="stat-card"
+            style="background: linear-gradient(135deg, #a29bfe, #6c5ce7)"
+          >
+            <div class="stat-value" id="timerDisplay">00:00</div>
+            <div class="stat-label">⏱️ Час</div>
+          </div>
+          <div
+            class="stat-card"
+            style="background: linear-gradient(135deg, #fd79a8, #e84393)"
+          >
+            <div class="stat-value" id="attemptsDisplay">0</div>
+            <div class="stat-label">🎯 Спроби</div>
+          </div>
+          <div
+            class="stat-card"
+            style="background: linear-gradient(135deg, #feca57, #f39c12)"
+          >
+            <div class="stat-label">⭐ Рейтинг</div>
+            <div class="stars-display" id="starsDisplay">☆☆☆</div>
+          </div>
+        </div>
+
+        <div class="input-section">
+          <div class="input-group">
+            <input
+              type="text"
+              id="textInput"
+              placeholder="Напиши слово для гри!"
+              maxlength="20"
+            />
+            <button id="displayBtn">Почати гру</button>
+          </div>
+          <div class="instructions">
+            <h3>Як грати:</h3>
+            <ul>
+              <li><strong>Перетягуй літери</strong> на правильні місця</li>
+              <li><strong>Збери слово</strong> в правильному порядку</li>
+              <li>
+                <strong>Натисни "Перевірити"</strong> щоб дізнатись результат
+              </li>
+              <li>
+                <strong>Підказка</strong> - якщо складно, подивись оригінальне
+                слово
+              </li>
+            </ul>
+          </div>
+
+          <div class="hint-section">
+            <div id="hintDisplay" class="hidden"></div>
+          </div>
+        </div>
+
+        <div id="textDisplay"></div>
+
+        <div class="controls">
+          <button
+            class="control-btn warning"
+            id="hintBtn"
+            onclick="toggleHint()"
+            disabled
+          >
+            👀 Підказка
+          </button>
+          <button
+            class="control-btn"
+            onclick="shuffleLetters()"
+            id="shuffleBtn"
+            disabled
+          >
+            🔄 Перемішати
+          </button>
+          <button class="control-btn danger" onclick="resetText()">
+            🎮 Нова гра
+          </button>
+        </div>
+
+        <div style="text-align: center; margin-top: 25px">
+          <button
+            class="check-main-btn"
+            id="checkBtn"
+            onclick="checkWord()"
+            disabled
+          >
+            ПЕРЕВІРИТИ
+          </button>
+        </div>
+      </div>
+    </main>
+    <script type="module" src="index.js"></script>
+  </body>
+</html>
