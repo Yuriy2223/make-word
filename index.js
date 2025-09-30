@@ -184,6 +184,9 @@ function onMouseDown(e) {
   const rect = draggedElement.getBoundingClientRect();
   const computedStyle = window.getComputedStyle(draggedElement);
 
+  const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+  const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+
   offsetX = rect.width / 2;
   offsetY = rect.height / 2;
 
@@ -215,6 +218,9 @@ function onMouseDown(e) {
 
   document.addEventListener("mousemove", onMouseMove);
   document.addEventListener("mouseup", onMouseUp);
+
+  document.addEventListener("touchmove", onMouseMove, { passive: false });
+  document.addEventListener("touchend", onMouseUp);
 }
 
 function onMouseMove(e) {
