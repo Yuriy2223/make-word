@@ -142,7 +142,8 @@ function displayText() {
         charElement.style.color = color;
         charElement.style.animationDelay = index * 0.1 + "s";
 
-        charElement.addEventListener("mousedown", onMouseDown);
+        // charElement.addEventListener("mousedown", onMouseDown);
+        attachDragHandlers(charElement);
 
         textDisplay.appendChild(charElement);
         characters.push(charElement);
@@ -295,6 +296,14 @@ function shuffleArray(array) {
 // });
 
 /************************************************************************************ */
+function attachDragHandlers(el) {
+  el.style.touchAction = "none";
+  el.addEventListener("mousedown", onMouseDown);
+  el.addEventListener("touchstart", onMouseDown, { passive: false });
+}
+
+// attachDragHandlers(charElement);
+
 function getClientPos(e) {
   if (e.touches && e.touches[0]) {
     return { x: e.touches[0].clientX, y: e.touches[0].clientY };
@@ -306,9 +315,11 @@ function getClientPos(e) {
 }
 
 function onMouseDown(e) {
+  if (e.touches && e.touches.length > 1) return;
   e.preventDefault();
 
-  draggedElement = e.target;
+  draggedElement = e.currentTarget || e.target;
+
   const rect = draggedElement.getBoundingClientRect();
   const computedStyle = window.getComputedStyle(draggedElement);
 
@@ -386,6 +397,8 @@ function onMouseUp(e) {
   document.removeEventListener("touchmove", onMouseMove);
   document.removeEventListener("touchend", onMouseUp);
 
+  // document.removeEventListener("touchcancel", onMouseUp);
+
   if (draggedClone) {
     draggedClone.remove();
     draggedClone = null;
@@ -412,10 +425,10 @@ function onMouseUp(e) {
   draggedElement = null;
 }
 
-document.querySelectorAll(".character").forEach((el) => {
-  el.addEventListener("mousedown", onMouseDown);
-  el.addEventListener("touchstart", onMouseDown, { passive: false });
-});
+// document.querySelectorAll(".character").forEach((el) => {
+//   el.addEventListener("mousedown", onMouseDown);
+//   el.addEventListener("touchstart", onMouseDown, { passive: false });
+// });
 
 function shuffleLetters() {
   const container = document.querySelector("#characters");
@@ -590,6 +603,40 @@ function createConfetti() {
   }
 }
 
+// function shuffleLetters() {
+//   if (characters.length === 0) return;
+
+//   const parent = characters[0].parentElement;
+//   const shuffledIndices = shuffleArray([...Array(characters.length).keys()]);
+
+//   const fragment = document.createDocumentFragment();
+//   shuffledIndices.forEach((index) => {
+//     fragment.appendChild(characters[index]);
+//   });
+
+//   parent.innerHTML = "";
+//   parent.appendChild(fragment);
+
+//   characters = Array.from(parent.children);
+
+//   characters.forEach((char) => {
+//     const oldChar = char.cloneNode(true);
+//     char.replaceWith(oldChar);
+//     oldChar.addEventListener("mousedown", onMouseDown);
+//     characters[characters.indexOf(char)] = oldChar;
+//   });
+
+//   characters = Array.from(parent.children);
+
+//   lastCheckedWord = "";
+//   const checkBtn = document.getElementById("checkBtn");
+//   checkBtn.textContent = "Перевірити";
+//   checkBtn.disabled = false;
+
+//   characters.forEach((char) => {
+//     char.classList.remove("correct", "incorrect");
+//   });
+// }
 function shuffleLetters() {
   if (characters.length === 0) return;
 
@@ -606,14 +653,12 @@ function shuffleLetters() {
 
   characters = Array.from(parent.children);
 
-  characters.forEach((char) => {
-    const oldChar = char.cloneNode(true);
-    char.replaceWith(oldChar);
-    oldChar.addEventListener("mousedown", onMouseDown);
-    characters[characters.indexOf(char)] = oldChar;
+  characters.forEach((char, idx) => {
+    const clone = char.cloneNode(true);
+    char.replaceWith(clone);
+    attachDragHandlers(clone);
+    characters[idx] = clone;
   });
-
-  characters = Array.from(parent.children);
 
   lastCheckedWord = "";
   const checkBtn = document.getElementById("checkBtn");
