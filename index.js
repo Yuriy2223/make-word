@@ -177,6 +177,134 @@ function shuffleArray(array) {
   return newArray;
 }
 
+// function onMouseDown(e) {
+//   e.preventDefault();
+
+//   draggedElement = e.target;
+//   const rect = draggedElement.getBoundingClientRect();
+//   const computedStyle = window.getComputedStyle(draggedElement);
+
+//   const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+//   const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+
+//   offsetX = rect.width / 2;
+//   offsetY = rect.height / 2;
+
+//   draggedClone = draggedElement.cloneNode(true);
+//   draggedClone.style.position = "fixed";
+//   draggedClone.style.width = rect.width + "px";
+//   draggedClone.style.height = rect.height + "px";
+//   draggedClone.style.margin = "0";
+//   draggedClone.style.padding = computedStyle.padding;
+//   draggedClone.style.fontSize = computedStyle.fontSize;
+//   draggedClone.style.fontWeight = computedStyle.fontWeight;
+//   draggedClone.style.border = computedStyle.border;
+//   draggedClone.style.borderRadius = computedStyle.borderRadius;
+//   draggedClone.style.backgroundColor = computedStyle.backgroundColor;
+//   draggedClone.style.zIndex = "1000";
+//   draggedClone.style.opacity = "0.95";
+//   draggedClone.style.cursor = "grabbing";
+//   draggedClone.style.pointerEvents = "none";
+//   draggedClone.style.transition = "none";
+//   draggedClone.style.transform = "none";
+//   draggedClone.style.boxShadow = "0 8px 20px rgba(0,0,0,0.3)";
+//   draggedClone.style.display = "flex";
+//   draggedClone.style.alignItems = "center";
+//   draggedClone.style.justifyContent = "center";
+
+//   draggedClone.style.left = clientX - offsetX + "px";
+//   draggedClone.style.top = clientY - offsetY + "px";
+
+//   document.body.appendChild(draggedClone);
+//   draggedElement.style.visibility = "hidden";
+
+//   document.addEventListener("mousemove", onMouseMove);
+//   document.addEventListener("mouseup", onMouseUp);
+
+//   document.addEventListener("touchmove", onMouseMove, { passive: false });
+//   document.addEventListener("touchend", onMouseUp);
+// }
+
+// function onMouseMove(e) {
+//   if (!draggedClone) return;
+
+//   if (e.touches) {
+//     e.preventDefault();
+//   }
+
+//   const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+//   const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+
+//   draggedClone.style.left = clientX - offsetX + "px";
+//   draggedClone.style.top = clientY - offsetY + "px";
+
+//   const elementBelow = document.elementFromPoint(clientX, clientY);
+
+//   document.querySelectorAll(".character").forEach((c) => {
+//     c.classList.remove("drop-target");
+//   });
+
+//   if (
+//     elementBelow &&
+//     elementBelow.classList.contains("character") &&
+//     elementBelow !== draggedElement
+//   ) {
+//     elementBelow.classList.add("drop-target");
+//   }
+// }
+
+// function onMouseUp(e) {
+//   if (!draggedElement) return;
+
+//   document.removeEventListener("mousemove", onMouseMove);
+//   document.removeEventListener("mouseup", onMouseUp);
+
+//   document.removeEventListener("touchmove", onMouseMove);
+//   document.removeEventListener("touchend", onMouseUp);
+
+//   if (draggedClone) {
+//     draggedClone.remove();
+//     draggedClone = null;
+//   }
+
+//   draggedElement.style.visibility = "";
+
+//   const clientX = e.changedTouches ? e.changedTouches[0].clientX : e.clientX;
+//   const clientY = e.changedTouches ? e.changedTouches[0].clientY : e.clientY;
+
+//   const elementBelow = document.elementFromPoint(clientX, clientY);
+
+//   document.querySelectorAll(".character").forEach((c) => {
+//     c.classList.remove("drop-target");
+//   });
+
+//   if (
+//     elementBelow &&
+//     elementBelow.classList.contains("character") &&
+//     elementBelow !== draggedElement
+//   ) {
+//     swapCharacters(draggedElement, elementBelow);
+//   }
+
+//   draggedElement = null;
+// }
+
+// document.querySelectorAll(".character").forEach((el) => {
+//   el.addEventListener("mousedown", onMouseDown);
+//   el.addEventListener("touchstart", onMouseDown, { passive: false });
+// });
+
+// 🔹 універсальна функція для координат
+function getClientPos(e) {
+  if (e.touches && e.touches[0]) {
+    return { x: e.touches[0].clientX, y: e.touches[0].clientY };
+  } else if (e.changedTouches && e.changedTouches[0]) {
+    return { x: e.changedTouches[0].clientX, y: e.changedTouches[0].clientY };
+  } else {
+    return { x: e.clientX, y: e.clientY };
+  }
+}
+
 function onMouseDown(e) {
   e.preventDefault();
 
@@ -184,8 +312,8 @@ function onMouseDown(e) {
   const rect = draggedElement.getBoundingClientRect();
   const computedStyle = window.getComputedStyle(draggedElement);
 
-  const clientX = e.touches ? e.touches[0].clientX : e.clientX;
-  const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+  // 🔹 замість if (touches) беремо універсальну
+  const { x: clientX, y: clientY } = getClientPos(e);
 
   offsetX = rect.width / 2;
   offsetY = rect.height / 2;
@@ -221,19 +349,17 @@ function onMouseDown(e) {
   document.addEventListener("mousemove", onMouseMove);
   document.addEventListener("mouseup", onMouseUp);
 
+  // 🔹 важливо додати passive:false, інакше не працює на мобільних
   document.addEventListener("touchmove", onMouseMove, { passive: false });
-  document.addEventListener("touchend", onMouseUp);
+  document.addEventListener("touchend", onMouseUp, { passive: false });
 }
 
 function onMouseMove(e) {
   if (!draggedClone) return;
 
-  if (e.touches) {
-    e.preventDefault();
-  }
+  e.preventDefault(); // 🔹 обов’язково, щоб не скролило
 
-  const clientX = e.touches ? e.touches[0].clientX : e.clientX;
-  const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+  const { x: clientX, y: clientY } = getClientPos(e);
 
   draggedClone.style.left = clientX - offsetX + "px";
   draggedClone.style.top = clientY - offsetY + "px";
@@ -269,8 +395,7 @@ function onMouseUp(e) {
 
   draggedElement.style.visibility = "";
 
-  const clientX = e.changedTouches ? e.changedTouches[0].clientX : e.clientX;
-  const clientY = e.changedTouches ? e.changedTouches[0].clientY : e.clientY;
+  const { x: clientX, y: clientY } = getClientPos(e); // 🔹 тепер завжди працює
 
   const elementBelow = document.elementFromPoint(clientX, clientY);
 
@@ -289,6 +414,7 @@ function onMouseUp(e) {
   draggedElement = null;
 }
 
+// 🔹 підписка теж з passive:false
 document.querySelectorAll(".character").forEach((el) => {
   el.addEventListener("mousedown", onMouseDown);
   el.addEventListener("touchstart", onMouseDown, { passive: false });
