@@ -792,13 +792,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
     document.addEventListener("pointermove", onPointerMove);
     document.addEventListener("pointerup", onPointerUp);
-
     document.addEventListener("pointercancel", onPointerUp);
 
     try {
       draggedElement.setPointerCapture(activePointerId);
     } catch (err) {
-      // не критично
+      // не
     }
   }
 
