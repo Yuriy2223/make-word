@@ -192,11 +192,6 @@ function onMouseDown(e) {
 
   draggedClone = draggedElement.cloneNode(true);
   draggedClone.style.position = "fixed";
-  // draggedClone.style.left = e.clientX - offsetX + "px";
-  // draggedClone.style.top = e.clientY - offsetY + "px";
-  // draggedClone.style.left = clientX - offsetX + "px";
-  // draggedClone.style.top = clientY - offsetY + "px";
-
   draggedClone.style.width = rect.width + "px";
   draggedClone.style.height = rect.height + "px";
   draggedClone.style.margin = "0";
@@ -240,12 +235,9 @@ function onMouseMove(e) {
   const clientX = e.touches ? e.touches[0].clientX : e.clientX;
   const clientY = e.touches ? e.touches[0].clientY : e.clientY;
 
-  // draggedClone.style.left = e.clientX - offsetX + "px";
-  // draggedClone.style.top = e.clientY - offsetY + "px";
   draggedClone.style.left = clientX - offsetX + "px";
   draggedClone.style.top = clientY - offsetY + "px";
 
-  // const elementBelow = document.elementFromPoint(e.clientX, e.clientY);
   const elementBelow = document.elementFromPoint(clientX, clientY);
 
   document.querySelectorAll(".character").forEach((c) => {
@@ -280,7 +272,6 @@ function onMouseUp(e) {
   const clientX = e.changedTouches ? e.changedTouches[0].clientX : e.clientX;
   const clientY = e.changedTouches ? e.changedTouches[0].clientY : e.clientY;
 
-  // const elementBelow = document.elementFromPoint(e.clientX, e.clientY);
   const elementBelow = document.elementFromPoint(clientX, clientY);
 
   document.querySelectorAll(".character").forEach((c) => {
@@ -297,6 +288,11 @@ function onMouseUp(e) {
 
   draggedElement = null;
 }
+
+document.querySelectorAll(".character").forEach((el) => {
+  el.addEventListener("mousedown", onMouseDown);
+  el.addEventListener("touchstart", onMouseDown, { passive: false });
+});
 
 function swapCharacters(char1, char2) {
   const parent = char1.parentElement;

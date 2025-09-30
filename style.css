@@ -949,3 +949,14 @@ h1 {
     height: 80px;
   }
 }
+.character.correct {
+  color: #ffffff;
+  text-shadow: 0 0 6px rgba(0, 77, 64, 0.8);
+  font-weight: bold;
+}
+
+.character.incorrect {
+  color: #ffffff;
+  text-shadow: 0 0 6px rgba(0, 0, 0, 0.9);
+  font-weight: bold;
+}
