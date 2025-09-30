@@ -93,6 +93,7 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
+    lastCheckedWord = "";
     originalWord = text;
     attempts = 0;
     const attemptsDisplay = document.getElementById("attemptsDisplay");
@@ -105,9 +106,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const hintDisplay = document.getElementById("hintDisplay");
     const hintBtn = document.getElementById("hintBtn");
-    if (hintDisplay) hintDisplay.textContent = text;
-
     if (hintDisplay && hintBtn) {
+      hintDisplay.textContent = text;
       if (difficulty === "easy") {
         hintDisplay.classList.remove("hidden");
         hintBtn.textContent = "🙈 Підказка тут";
@@ -125,7 +125,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const checkBtn = document.getElementById("checkBtn");
     const shuffleBtn = document.getElementById("shuffleBtn");
-    if (checkBtn) checkBtn.disabled = false;
+    if (checkBtn) {
+      checkBtn.textContent = "Перевірити";
+      checkBtn.disabled = false;
+    }
     if (shuffleBtn) shuffleBtn.disabled = false;
 
     const letters = shuffleArray([...text]);
@@ -234,11 +237,7 @@ document.addEventListener("DOMContentLoaded", () => {
     document.addEventListener("pointerup", onPointerUp);
     document.addEventListener("pointercancel", onPointerUp);
 
-    try {
-      draggedElement.setPointerCapture(activePointerId);
-    } catch (err) {
-      // не
-    }
+    draggedElement.setPointerCapture(activePointerId);
   }
 
   function onPointerMove(e) {
