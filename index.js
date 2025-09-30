@@ -192,8 +192,11 @@ function onMouseDown(e) {
 
   draggedClone = draggedElement.cloneNode(true);
   draggedClone.style.position = "fixed";
-  draggedClone.style.left = e.clientX - offsetX + "px";
-  draggedClone.style.top = e.clientY - offsetY + "px";
+  // draggedClone.style.left = e.clientX - offsetX + "px";
+  // draggedClone.style.top = e.clientY - offsetY + "px";
+  // draggedClone.style.left = clientX - offsetX + "px";
+  // draggedClone.style.top = clientY - offsetY + "px";
+
   draggedClone.style.width = rect.width + "px";
   draggedClone.style.height = rect.height + "px";
   draggedClone.style.margin = "0";
@@ -213,6 +216,10 @@ function onMouseDown(e) {
   draggedClone.style.display = "flex";
   draggedClone.style.alignItems = "center";
   draggedClone.style.justifyContent = "center";
+
+  draggedClone.style.left = clientX - offsetX + "px";
+  draggedClone.style.top = clientY - offsetY + "px";
+
   document.body.appendChild(draggedClone);
   draggedElement.style.visibility = "hidden";
 
@@ -226,10 +233,20 @@ function onMouseDown(e) {
 function onMouseMove(e) {
   if (!draggedClone) return;
 
-  draggedClone.style.left = e.clientX - offsetX + "px";
-  draggedClone.style.top = e.clientY - offsetY + "px";
+  if (e.touches) {
+    e.preventDefault();
+  }
 
-  const elementBelow = document.elementFromPoint(e.clientX, e.clientY);
+  const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+  const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+
+  // draggedClone.style.left = e.clientX - offsetX + "px";
+  // draggedClone.style.top = e.clientY - offsetY + "px";
+  draggedClone.style.left = clientX - offsetX + "px";
+  draggedClone.style.top = clientY - offsetY + "px";
+
+  // const elementBelow = document.elementFromPoint(e.clientX, e.clientY);
+  const elementBelow = document.elementFromPoint(clientX, clientY);
 
   document.querySelectorAll(".character").forEach((c) => {
     c.classList.remove("drop-target");
@@ -250,6 +267,9 @@ function onMouseUp(e) {
   document.removeEventListener("mousemove", onMouseMove);
   document.removeEventListener("mouseup", onMouseUp);
 
+  document.removeEventListener("touchmove", onMouseMove);
+  document.removeEventListener("touchend", onMouseUp);
+
   if (draggedClone) {
     draggedClone.remove();
     draggedClone = null;
@@ -257,7 +277,11 @@ function onMouseUp(e) {
 
   draggedElement.style.visibility = "";
 
-  const elementBelow = document.elementFromPoint(e.clientX, e.clientY);
+  const clientX = e.changedTouches ? e.changedTouches[0].clientX : e.clientX;
+  const clientY = e.changedTouches ? e.changedTouches[0].clientY : e.clientY;
+
+  // const elementBelow = document.elementFromPoint(e.clientX, e.clientY);
+  const elementBelow = document.elementFromPoint(clientX, clientY);
 
   document.querySelectorAll(".character").forEach((c) => {
     c.classList.remove("drop-target");
