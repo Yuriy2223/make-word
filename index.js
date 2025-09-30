@@ -294,7 +294,7 @@ function shuffleArray(array) {
 //   el.addEventListener("touchstart", onMouseDown, { passive: false });
 // });
 
-// 🔹 універсальна функція для координат
+/************************************************************************************ */
 function getClientPos(e) {
   if (e.touches && e.touches[0]) {
     return { x: e.touches[0].clientX, y: e.touches[0].clientY };
@@ -312,7 +312,6 @@ function onMouseDown(e) {
   const rect = draggedElement.getBoundingClientRect();
   const computedStyle = window.getComputedStyle(draggedElement);
 
-  // 🔹 замість if (touches) беремо універсальну
   const { x: clientX, y: clientY } = getClientPos(e);
 
   offsetX = rect.width / 2;
@@ -349,7 +348,6 @@ function onMouseDown(e) {
   document.addEventListener("mousemove", onMouseMove);
   document.addEventListener("mouseup", onMouseUp);
 
-  // 🔹 важливо додати passive:false, інакше не працює на мобільних
   document.addEventListener("touchmove", onMouseMove, { passive: false });
   document.addEventListener("touchend", onMouseUp, { passive: false });
 }
@@ -357,7 +355,7 @@ function onMouseDown(e) {
 function onMouseMove(e) {
   if (!draggedClone) return;
 
-  e.preventDefault(); // 🔹 обов’язково, щоб не скролило
+  e.preventDefault();
 
   const { x: clientX, y: clientY } = getClientPos(e);
 
@@ -395,7 +393,7 @@ function onMouseUp(e) {
 
   draggedElement.style.visibility = "";
 
-  const { x: clientX, y: clientY } = getClientPos(e); // 🔹 тепер завжди працює
+  const { x: clientX, y: clientY } = getClientPos(e);
 
   const elementBelow = document.elementFromPoint(clientX, clientY);
 
@@ -414,12 +412,24 @@ function onMouseUp(e) {
   draggedElement = null;
 }
 
-// 🔹 підписка теж з passive:false
 document.querySelectorAll(".character").forEach((el) => {
   el.addEventListener("mousedown", onMouseDown);
   el.addEventListener("touchstart", onMouseDown, { passive: false });
 });
 
+function shuffleLetters() {
+  const container = document.querySelector("#characters");
+  const chars = Array.from(container.children);
+  chars.sort(() => Math.random() - 0.5);
+
+  container.innerHTML = "";
+  chars.forEach((oldChar) => {
+    container.appendChild(oldChar);
+    oldChar.addEventListener("mousedown", onMouseDown);
+    oldChar.addEventListener("touchstart", onMouseDown, { passive: false });
+  });
+}
+/************************************************************************************ */
 function swapCharacters(char1, char2) {
   const parent = char1.parentElement;
   const index1 = Array.from(parent.children).indexOf(char1);
