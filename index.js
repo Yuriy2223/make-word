@@ -142,7 +142,6 @@ function displayText() {
         charElement.style.color = color;
         charElement.style.animationDelay = index * 0.1 + "s";
 
-        // charElement.addEventListener("mousedown", onMouseDown);
         attachDragHandlers(charElement);
 
         textDisplay.appendChild(charElement);
@@ -178,131 +177,11 @@ function shuffleArray(array) {
   return newArray;
 }
 
-// function onMouseDown(e) {
-//   e.preventDefault();
-
-//   draggedElement = e.target;
-//   const rect = draggedElement.getBoundingClientRect();
-//   const computedStyle = window.getComputedStyle(draggedElement);
-
-//   const clientX = e.touches ? e.touches[0].clientX : e.clientX;
-//   const clientY = e.touches ? e.touches[0].clientY : e.clientY;
-
-//   offsetX = rect.width / 2;
-//   offsetY = rect.height / 2;
-
-//   draggedClone = draggedElement.cloneNode(true);
-//   draggedClone.style.position = "fixed";
-//   draggedClone.style.width = rect.width + "px";
-//   draggedClone.style.height = rect.height + "px";
-//   draggedClone.style.margin = "0";
-//   draggedClone.style.padding = computedStyle.padding;
-//   draggedClone.style.fontSize = computedStyle.fontSize;
-//   draggedClone.style.fontWeight = computedStyle.fontWeight;
-//   draggedClone.style.border = computedStyle.border;
-//   draggedClone.style.borderRadius = computedStyle.borderRadius;
-//   draggedClone.style.backgroundColor = computedStyle.backgroundColor;
-//   draggedClone.style.zIndex = "1000";
-//   draggedClone.style.opacity = "0.95";
-//   draggedClone.style.cursor = "grabbing";
-//   draggedClone.style.pointerEvents = "none";
-//   draggedClone.style.transition = "none";
-//   draggedClone.style.transform = "none";
-//   draggedClone.style.boxShadow = "0 8px 20px rgba(0,0,0,0.3)";
-//   draggedClone.style.display = "flex";
-//   draggedClone.style.alignItems = "center";
-//   draggedClone.style.justifyContent = "center";
-
-//   draggedClone.style.left = clientX - offsetX + "px";
-//   draggedClone.style.top = clientY - offsetY + "px";
-
-//   document.body.appendChild(draggedClone);
-//   draggedElement.style.visibility = "hidden";
-
-//   document.addEventListener("mousemove", onMouseMove);
-//   document.addEventListener("mouseup", onMouseUp);
-
-//   document.addEventListener("touchmove", onMouseMove, { passive: false });
-//   document.addEventListener("touchend", onMouseUp);
-// }
-
-// function onMouseMove(e) {
-//   if (!draggedClone) return;
-
-//   if (e.touches) {
-//     e.preventDefault();
-//   }
-
-//   const clientX = e.touches ? e.touches[0].clientX : e.clientX;
-//   const clientY = e.touches ? e.touches[0].clientY : e.clientY;
-
-//   draggedClone.style.left = clientX - offsetX + "px";
-//   draggedClone.style.top = clientY - offsetY + "px";
-
-//   const elementBelow = document.elementFromPoint(clientX, clientY);
-
-//   document.querySelectorAll(".character").forEach((c) => {
-//     c.classList.remove("drop-target");
-//   });
-
-//   if (
-//     elementBelow &&
-//     elementBelow.classList.contains("character") &&
-//     elementBelow !== draggedElement
-//   ) {
-//     elementBelow.classList.add("drop-target");
-//   }
-// }
-
-// function onMouseUp(e) {
-//   if (!draggedElement) return;
-
-//   document.removeEventListener("mousemove", onMouseMove);
-//   document.removeEventListener("mouseup", onMouseUp);
-
-//   document.removeEventListener("touchmove", onMouseMove);
-//   document.removeEventListener("touchend", onMouseUp);
-
-//   if (draggedClone) {
-//     draggedClone.remove();
-//     draggedClone = null;
-//   }
-
-//   draggedElement.style.visibility = "";
-
-//   const clientX = e.changedTouches ? e.changedTouches[0].clientX : e.clientX;
-//   const clientY = e.changedTouches ? e.changedTouches[0].clientY : e.clientY;
-
-//   const elementBelow = document.elementFromPoint(clientX, clientY);
-
-//   document.querySelectorAll(".character").forEach((c) => {
-//     c.classList.remove("drop-target");
-//   });
-
-//   if (
-//     elementBelow &&
-//     elementBelow.classList.contains("character") &&
-//     elementBelow !== draggedElement
-//   ) {
-//     swapCharacters(draggedElement, elementBelow);
-//   }
-
-//   draggedElement = null;
-// }
-
-// document.querySelectorAll(".character").forEach((el) => {
-//   el.addEventListener("mousedown", onMouseDown);
-//   el.addEventListener("touchstart", onMouseDown, { passive: false });
-// });
-
-/************************************************************************************ */
 function attachDragHandlers(el) {
   el.style.touchAction = "none";
   el.addEventListener("mousedown", onMouseDown);
   el.addEventListener("touchstart", onMouseDown, { passive: false });
 }
-
-// attachDragHandlers(charElement);
 
 function getClientPos(e) {
   if (e.touches && e.touches[0]) {
@@ -397,8 +276,6 @@ function onMouseUp(e) {
   document.removeEventListener("touchmove", onMouseMove);
   document.removeEventListener("touchend", onMouseUp);
 
-  // document.removeEventListener("touchcancel", onMouseUp);
-
   if (draggedClone) {
     draggedClone.remove();
     draggedClone = null;
@@ -425,11 +302,6 @@ function onMouseUp(e) {
   draggedElement = null;
 }
 
-// document.querySelectorAll(".character").forEach((el) => {
-//   el.addEventListener("mousedown", onMouseDown);
-//   el.addEventListener("touchstart", onMouseDown, { passive: false });
-// });
-
 function shuffleLetters() {
   const container = document.querySelector("#characters");
   const chars = Array.from(container.children);
@@ -442,7 +314,7 @@ function shuffleLetters() {
     oldChar.addEventListener("touchstart", onMouseDown, { passive: false });
   });
 }
-/************************************************************************************ */
+
 function swapCharacters(char1, char2) {
   const parent = char1.parentElement;
   const index1 = Array.from(parent.children).indexOf(char1);
@@ -603,40 +475,6 @@ function createConfetti() {
   }
 }
 
-// function shuffleLetters() {
-//   if (characters.length === 0) return;
-
-//   const parent = characters[0].parentElement;
-//   const shuffledIndices = shuffleArray([...Array(characters.length).keys()]);
-
-//   const fragment = document.createDocumentFragment();
-//   shuffledIndices.forEach((index) => {
-//     fragment.appendChild(characters[index]);
-//   });
-
-//   parent.innerHTML = "";
-//   parent.appendChild(fragment);
-
-//   characters = Array.from(parent.children);
-
-//   characters.forEach((char) => {
-//     const oldChar = char.cloneNode(true);
-//     char.replaceWith(oldChar);
-//     oldChar.addEventListener("mousedown", onMouseDown);
-//     characters[characters.indexOf(char)] = oldChar;
-//   });
-
-//   characters = Array.from(parent.children);
-
-//   lastCheckedWord = "";
-//   const checkBtn = document.getElementById("checkBtn");
-//   checkBtn.textContent = "Перевірити";
-//   checkBtn.disabled = false;
-
-//   characters.forEach((char) => {
-//     char.classList.remove("correct", "incorrect");
-//   });
-// }
 function shuffleLetters() {
   if (characters.length === 0) return;
 
