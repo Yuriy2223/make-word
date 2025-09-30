@@ -966,3 +966,120 @@ h1 {
   user-select: none;
   -webkit-touch-callout: none;
 }
+
+/* Модальне вікно */
+#statsModal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.7);
+  z-index: 3000;
+  justify-content: center;
+  align-items: center;
+}
+
+.modal-content {
+  background: white;
+  padding: 30px;
+  border-radius: 20px;
+  max-width: 500px;
+  width: 90%;
+  max-height: 80vh;
+  overflow-y: auto;
+}
+
+.modal-title {
+  text-align: center;
+  color: #667eea;
+  margin-bottom: 20px;
+}
+
+.modal-buttons {
+  display: flex;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.modal-buttons button {
+  flex: 1;
+}
+
+.stats-summary {
+  margin-bottom: 20px;
+  padding: 15px;
+  background: linear-gradient(135deg, #a29bfe, #6c5ce7);
+  border-radius: 15px;
+  color: white;
+  text-align: center;
+}
+
+.stats-summary-value {
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.stats-summary-label {
+  font-size: 14px;
+}
+
+.stats-grid {
+  display: grid;
+  gap: 10px;
+}
+
+.stat-level-card {
+  padding: 15px;
+  border-radius: 15px;
+  color: white;
+}
+
+.stat-level-card.easy {
+  background: linear-gradient(135deg, #55efc4, #00b894);
+}
+
+.stat-level-card.medium {
+  background: linear-gradient(135deg, #feca57, #f39c12);
+}
+
+.stat-level-card.hard {
+  background: linear-gradient(135deg, #ff7675, #d63031);
+}
+
+.stat-level-title {
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.last-game-section {
+  margin-top: 20px;
+}
+
+.last-game-title {
+  color: #667eea;
+  margin-bottom: 10px;
+}
+
+.last-game-card {
+  padding: 10px;
+  background: #f0f0f0;
+  border-radius: 10px;
+  font-size: 14px;
+}
+
+.stats-button-wrapper {
+  text-align: center;
+  margin-bottom: 15px;
+  margin-top: 60px;
+}
+
+.stats-button {
+  background: linear-gradient(135deg, #a29bfe, #6c5ce7);
+}
+
+.check-button-wrapper {
+  text-align: center;
+  margin-top: 25px;
+}

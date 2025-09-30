@@ -429,6 +429,10 @@ document.addEventListener("DOMContentLoaded", () => {
         checkBtn.textContent = "🎉 Молодець!";
         checkBtn.disabled = true;
       }
+
+      const currentStars = document.getElementById("starsDisplay").textContent;
+      saveGameResult(true, currentStars);
+
       setTimeout(() => {
         showSuccess();
         createConfetti();
@@ -535,4 +539,151 @@ document.addEventListener("DOMContentLoaded", () => {
       displayBtn.disabled = !textInput.value.trim();
     });
   }
+
+  // ========== ЛОКАЛЬНЕ ЗБЕРЕЖЕННЯ ПРОГРЕСУ ========== //
+
+  function getDefaultStats() {
+    return {
+      easy: { played: 0, won: 0, bestTime: null, totalStars: 0 },
+      medium: { played: 0, won: 0, bestTime: null, totalStars: 0 },
+      hard: { played: 0, won: 0, bestTime: null, totalStars: 0 },
+      history: [],
+      totalGames: 0,
+      totalWins: 0,
+    };
+  }
+
+  function loadStats() {
+    const saved = localStorage.getItem("wordGameStats");
+    return saved ? JSON.parse(saved) : getDefaultStats();
+  }
+
+  function saveStats(stats) {
+    localStorage.setItem("wordGameStats", JSON.stringify(stats));
+  }
+
+  function saveGameResult(isWin, stars) {
+    const stats = loadStats();
+    const elapsed = startTime ? Math.floor((Date.now() - startTime) / 1000) : 0;
+
+    stats.totalGames++;
+    stats[difficulty].played++;
+
+    if (isWin) {
+      stats.totalWins++;
+      stats[difficulty].won++;
+      stats[difficulty].totalStars += stars.length;
+
+      if (!stats[difficulty].bestTime || elapsed < stats[difficulty].bestTime) {
+        stats[difficulty].bestTime = elapsed;
+      }
+    }
+
+    stats.history.unshift({
+      word: originalWord,
+      difficulty: difficulty,
+      time: elapsed,
+      attempts: attempts,
+      stars: stars,
+      won: isWin,
+      date: Date.now(),
+    });
+
+    if (stats.history.length > 20) {
+      stats.history = stats.history.slice(0, 20);
+    }
+
+    saveStats(stats);
+  }
+
+  window.resetStats = () => {
+    localStorage.removeItem("wordGameStats");
+  };
+  // ========== модальне вікно ========== //
+
+  function toggleStatsModal() {
+    const modal = document.getElementById("statsModal");
+    if (modal.style.display === "none" || !modal.style.display) {
+      const stats = loadStats();
+      const content = document.getElementById("statsContent");
+
+      content.innerHTML = `
+      <div style="margin-bottom: 20px; padding: 15px; background: linear-gradient(135deg, #a29bfe, #6c5ce7); border-radius: 15px; color: white; text-align: center;">
+        <div style="font-size: 28px; font-weight: bold;">${stats.totalWins} / ${
+        stats.totalGames
+      }</div>
+        <div style="font-size: 14px;">Перемог / Всього ігор</div>
+      </div>
+      
+      <div style="display: grid; gap: 10px;">
+        <div style="padding: 15px; background: linear-gradient(135deg, #55efc4, #00b894); border-radius: 15px; color: white;">
+          <div style="font-weight: bold; margin-bottom: 5px;">🟢 ЛЕГКО</div>
+          <div>Зіграно: ${stats.easy.played} | Виграно: ${stats.easy.won}</div>
+          <div>⭐ Зірок: ${stats.easy.totalStars}</div>
+          <div>⏱️ Кращий час: ${
+            stats.easy.bestTime ? stats.easy.bestTime + "с" : "-"
+          }</div>
+        </div>
+        
+        <div style="padding: 15px; background: linear-gradient(135deg, #feca57, #f39c12); border-radius: 15px; color: white;">
+          <div style="font-weight: bold; margin-bottom: 5px;">🟡 СЕРЕДНЬО</div>
+          <div>Зіграно: ${stats.medium.played} | Виграно: ${
+        stats.medium.won
+      }</div>
+          <div>⭐ Зірок: ${stats.medium.totalStars}</div>
+          <div>⏱️ Кращий час: ${
+            stats.medium.bestTime ? stats.medium.bestTime + "с" : "-"
+          }</div>
+        </div>
+        
+        <div style="padding: 15px; background: linear-gradient(135deg, #ff7675, #d63031); border-radius: 15px; color: white;">
+          <div style="font-weight: bold; margin-bottom: 5px;">🔴 ВАЖКО</div>
+          <div>Зіграно: ${stats.hard.played} | Виграно: ${stats.hard.won}</div>
+          <div>⭐ Зірок: ${stats.hard.totalStars}</div>
+          <div>⏱️ Кращий час: ${
+            stats.hard.bestTime ? stats.hard.bestTime + "с" : "-"
+          }</div>
+        </div>
+      </div>
+      
+      ${
+        stats.history.length > 0
+          ? `
+        <div style="margin-top: 20px;">
+          <h3 style="color: #667eea; margin-bottom: 10px;">📜 Остання гра:</h3>
+          <div style="padding: 10px; background: #f0f0f0; border-radius: 10px; font-size: 14px;">
+            <div><strong>Слово:</strong> ${stats.history[0].word}</div>
+            <div><strong>Рівень:</strong> ${
+              stats.history[0].difficulty === "easy"
+                ? "🟢 Легко"
+                : stats.history[0].difficulty === "medium"
+                ? "🟡 Середньо"
+                : "🔴 Важко"
+            }</div>
+            <div><strong>Час:</strong> ${
+              stats.history[0].time
+            }с | <strong>Спроби:</strong> ${stats.history[0].attempts}</div>
+            <div><strong>Результат:</strong> ${stats.history[0].stars}</div>
+          </div>
+        </div>
+      `
+          : ""
+      }
+    `;
+
+      modal.style.display = "flex";
+    } else {
+      modal.style.display = "none";
+    }
+  }
+
+  function confirmResetStats() {
+    if (confirm("Точно хочеш скинути статистику?")) {
+      window.resetStats();
+      toggleStatsModal();
+      setTimeout(() => toggleStatsModal(), 100);
+    }
+  }
+
+  window.toggleStatsModal = toggleStatsModal;
 });
