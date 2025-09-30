@@ -60,24 +60,6 @@ function setDifficulty(level) {
   }
 }
 
-// function displayText() {
-//   const text = document.getElementById("textInput").value.trim().toUpperCase();
-//   if (!text) return;
-
-//   const length = text.length;
-
-//   if (difficulty === "easy" && (length < 3 || length > 5)) {
-//     alert("🟢 Легкий рівень: введи слово від 3 до 5 букв!");
-//     return;
-//   }
-//   if (difficulty === "medium" && (length < 6 || length > 8)) {
-//     alert("🟡 Середній рівень: введи слово від 6 до 8 букв!");
-//     return;
-//   }
-//   if (difficulty === "hard" && length < 9) {
-//     alert("🔴 Важкий рівень: введи слово від 9 букв!");
-//     return;
-//   }
 function showError(message) {
   const errorDiv = document.createElement("div");
   errorDiv.className = "error-message";
@@ -154,7 +136,6 @@ function displayText() {
         charElement.className = "character";
         charElement.textContent = char;
         charElement.dataset.char = char;
-
         const color =
           letterColors[Math.floor(Math.random() * letterColors.length)];
         charElement.style.borderColor = color;
@@ -289,25 +270,15 @@ function onMouseUp(e) {
 
 function swapCharacters(char1, char2) {
   const parent = char1.parentElement;
-  const next1 = char1.nextSibling;
-  const next2 = char2.nextSibling;
+  const index1 = Array.from(parent.children).indexOf(char1);
+  const index2 = Array.from(parent.children).indexOf(char2);
 
-  if (next1 === char2) {
+  if (index1 < index2) {
     parent.insertBefore(char2, char1);
-  } else if (next2 === char1) {
-    parent.insertBefore(char1, char2);
+    parent.insertBefore(char1, parent.children[index2]);
   } else {
-    if (next1) {
-      parent.insertBefore(char2, next1);
-    } else {
-      parent.appendChild(char2);
-    }
-
-    if (next2) {
-      parent.insertBefore(char1, next2);
-    } else {
-      parent.appendChild(char1);
-    }
+    parent.insertBefore(char1, char2);
+    parent.insertBefore(char2, parent.children[index1]);
   }
 
   characters = Array.from(parent.children);
@@ -340,6 +311,25 @@ function updateStars() {
   document.getElementById("starsDisplay").textContent = stars;
 }
 
+function showEncouragement() {
+  const messages = [
+    "Майже вийшло! <br>Спробуй ще раз!",
+    "Не здавайся! <br>У тебе все вийде!",
+    "Так близько! <br>Ще одна спроба!",
+    "Молодець, що стараєшся! <br>Продовжуй!",
+    "Ти на правильному шляху! <br>Давай ще раз!",
+  ];
+
+  const randomMessage = messages[Math.floor(Math.random() * messages.length)];
+
+  const messageDiv = document.createElement("div");
+  messageDiv.className = "error-message";
+  messageDiv.innerHTML = randomMessage;
+  document.body.appendChild(messageDiv);
+
+  setTimeout(() => messageDiv.remove(), 2500);
+}
+
 function checkWord() {
   const currentWord = characters.map((char) => char.dataset.char).join("");
 
@@ -369,7 +359,6 @@ function checkWord() {
 
   if (isCorrect) {
     const checkBtn = document.getElementById("checkBtn");
-    const originalText = checkBtn.textContent;
     checkBtn.textContent = "🎉 Молодець!";
     checkBtn.disabled = true;
 
@@ -378,9 +367,12 @@ function checkWord() {
       createConfetti();
       if (timerInterval) clearInterval(timerInterval);
     }, characters.length * 150 + 800);
+  } else {
+    setTimeout(() => {
+      showEncouragement();
+    }, characters.length * 150 + 300);
   }
 }
-
 function toggleHint() {
   if (difficulty === "easy" || difficulty === "hard") return;
 
@@ -479,7 +471,7 @@ function resetText() {
   document.getElementById("textDisplay").innerHTML = "";
   document.getElementById("textInput").value = "";
   document.getElementById("hintDisplay").classList.add("hidden");
-  document.getElementById("hintBtn").disabled = false;
+  document.getElementById("hintBtn").disabled = true;
   document.getElementById("shuffleBtn").disabled = true;
   document.getElementById("hintBtn").textContent = "👀 Підказка";
   document.getElementById("timerDisplay").textContent = "00:00";
@@ -494,6 +486,12 @@ function resetText() {
   attempts = 0;
   startTime = null;
   lastCheckedWord = "";
+
+  const textInput = document.getElementById("textInput");
+  const displayBtn = document.getElementById("displayBtn");
+  textInput.value = "";
+  displayBtn.disabled = true;
+  textInput.focus();
 }
 
 window.setDifficulty = setDifficulty;
@@ -501,3 +499,16 @@ window.toggleHint = toggleHint;
 window.shuffleLetters = shuffleLetters;
 window.resetText = resetText;
 window.checkWord = checkWord;
+
+const textInput = document.getElementById("textInput");
+const displayBtn = document.getElementById("displayBtn");
+
+displayBtn.disabled = true;
+
+textInput.addEventListener("input", () => {
+  if (textInput.value.trim()) {
+    displayBtn.disabled = false;
+  } else {
+    displayBtn.disabled = true;
+  }
+});
