@@ -119,8 +119,29 @@
             ПЕРЕВІРИТИ
           </button>
         </div>
+
+        <div class="stats-button-wrapper">
+          <button class="control-btn stats-button" onclick="toggleStatsModal()">
+            Моя статистика
+          </button>
+        </div>
       </div>
     </main>
+
+    <div id="statsModal">
+      <div class="modal-content">
+        <h2 class="modal-title">Твоя статистика</h2>
+        <div id="statsContent"></div>
+        <div class="modal-buttons">
+          <button class="control-btn danger" onclick="confirmResetStats()">
+            Скинути
+          </button>
+          <button class="control-btn" onclick="toggleStatsModal()">
+            Закрити
+          </button>
+        </div>
+      </div>
+    </div>
     <script type="module" src="index.js"></script>
   </body>
 </html>
